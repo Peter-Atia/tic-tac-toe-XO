@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:xo/Features/home/presentation/manager/app_cubit.dart';
 import 'package:xo/Features/home/presentation/views/home_view.dart';
 
 void main() {
@@ -9,11 +11,11 @@ class XO extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: HomeView(),
-
+    return BlocProvider(
+      create: (context)=>AppCubit(),
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home:HomeView(),
       ),
     );
   }
