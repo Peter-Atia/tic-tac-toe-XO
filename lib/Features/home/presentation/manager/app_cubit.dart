@@ -1,12 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:xo/Features/home/presentation/manager/app_states.dart';
 
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(InitialState());
   String playerName = "X";
-  late final List<List<String>> _board = [
+  String winner = "";
+  bool gameOver = false;
+  int cellsFilled = 0 ;
+  late List<List<String>> board = [
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],
@@ -22,49 +23,80 @@ class AppCubit extends Cubit<AppStates> {
     }
   }
 
-  bool isCellEmpty({required int row, required int col}) {
-    if (_board[row][col] == "") {
+  bool _isCellEmpty({required int row, required int col}) {
+    if (board[row][col] == "") {
       return true;
     } else {
       return false;
     }
   }
 
+  void fillCell({
+    required int row,
+    required int col,
+    required String playerName,
+  }) {
+    if(gameOver){
+      return;
+    }
+    if(_isCellEmpty(row: row, col: col)){
+      board[row][col] = playerName;
+      cellsFilled++;
+      winner = checkWinner();
+      changePlayerTurn();
+    }
+
+
+  }
+
   String checkWinner() {
     for (int i = 0; i < 3; i++) {
-      if (_board[i][0] != "" &&
-          _board[i][0] == _board[i][1] &&
-          _board[i][1] == _board[i][2]) {
-        return _board[i][0];
+      if (board[i][0] != "" &&
+          board[i][0] == board[i][1] &&
+          board[i][1] == board[i][2]) {
+        gameOver = true ;
+        return board[i][0];
       }
     }
 
     //col
     for (int i = 0; i < 3; i++) {
-      if (_board[0][i] != "" &&
-          _board[0][i] == _board[1][i] &&
-          _board[1][i] == _board[2][i]) {
-        return _board[0][i];
+      if (board[0][i] != "" &&
+          board[0][i] == board[1][i] &&
+          board[1][i] == board[2][i]) {
+        gameOver = true ;
+        return board[0][i];
       }
     }
 
     // left diagonal
-    if (_board[0][0] != "" &&
-        _board[0][0] == _board[1][1] &&
-        _board[1][1] == _board[2][2]) {
-      return _board[0][0];
+    if (board[0][0] != "" &&
+        board[0][0] == board[1][1] &&
+        board[1][1] == board[2][2]) {
+      gameOver = true ;
+      return board[0][0];
     }
     //right diagonal
-    if (_board[0][2] != "" &&
-        _board[0][2] == _board[1][1] &&
-        _board[1][1] == _board[2][0]) {
-      return _board[0][2];
+    if (board[0][2] != "" &&
+        board[0][2] == board[1][1] &&
+        board[1][1] == board[2][0]) {
+      gameOver = true ;
+      return board[0][2];
     }
 
     return "";
   }
 
-  void restBoard(){
-    _board.clear();
+  void restBoard() {
+    playerName = "X";
+    winner = "";
+    gameOver = false;
+    cellsFilled = 0 ;
+    emit(InitialState());
+    board = [
+      ["", "", ""],
+      ["", "", ""],
+      ["", "", ""],
+    ];
   }
 }
