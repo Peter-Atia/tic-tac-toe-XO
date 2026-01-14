@@ -6,6 +6,11 @@ class HomeViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const GridDesign();
+    return Column(
+      children: [
+        SizedBox(height: MediaQuery.of(context).size.height * .2),
+        const GridDesign(),
+      ],
+    );
   }
 }
